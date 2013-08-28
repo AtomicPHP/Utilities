@@ -1,0 +1,24 @@
+{
+    "name": "atomicphp/utilities",
+    "type": "library",
+    "description": "Utility classes used by other AtomicPHP libraries",
+    "keywords": [
+        "Utilities"
+    ],
+    "homepage": "https://github.com/AtomicPHP/Utilities",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niels Nijens",
+            "email": "nijens.niels@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "psr-0": {
+            "AtomicPHP\\Utilities": "src/"
+        }
+    }
+}
