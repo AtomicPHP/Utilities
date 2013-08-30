@@ -5,8 +5,9 @@
  * @author Niels Nijens <nijens.niels@gmail.com>
  */
 spl_autoload_register(function($className) {
-    if (strpos($className, "AtomicPHP\\Utilities\\") === 0) {
-        $classNameFile = substr($className, 20) . ".php";
+    $vendorNamespace = "AtomicPHP\\Utilities\\";
+    if (strpos($className, $vendorNamespace) === 0) {
+        $classNameFile = substr($className, strlen($vendorNamespace) ) . ".php";
         include __DIR__ . "/../src/" . $classNameFile;
     }
 });
