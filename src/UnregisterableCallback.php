@@ -1,6 +1,6 @@
 <?php
 
-namespace AtomicPHP\Utilities;
+namespace Nijens\Utilities;
 
 use \InvalidArgumentException;
 
@@ -8,7 +8,7 @@ use \InvalidArgumentException;
  * UnregisterableCallback
  *
  * @author  Niels Nijens <nijens.niels@gmail.com>
- * @package AtomicPHP\Utilities
+ * @package Nijens\Utilities
  **/
 class UnregisterableCallback
 {

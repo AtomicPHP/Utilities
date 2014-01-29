@@ -1,14 +1,14 @@
 <?php
 
-namespace AtomicPHP\Utilities\Tests;
+namespace Nijens\Utilities\Tests;
 
-use AtomicPHP\Utilities\UnregisterableCallback;
+use Nijens\Utilities\UnregisterableCallback;
 
 /**
  * UnregisterableCallbackTest
  *
  * @author  Niels Nijens <nijens.niels@gmail.com>
- * @package AtomicPHP\Utilities\Tests
+ * @package Nijens\Utilities\Tests
  **/
 class UnregisterableCallbackTest extends \PHPUnit_Framework_TestCase
 {
