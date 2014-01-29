@@ -1,11 +1,11 @@
 {
-    "name": "atomicphp/utilities",
+    "name": "niels-nijens/utilities",
     "type": "library",
-    "description": "Utility classes used by other AtomicPHP libraries",
+    "description": "Utility classes",
     "keywords": [
         "Utilities"
     ],
-    "homepage": "https://github.com/AtomicPHP/Utilities",
+    "homepage": "https://github.com/niels-nijens/Utilities",
     "license": "MIT",
     "authors": [
         {
@@ -21,6 +21,8 @@
         "satooshi/php-coveralls": "dev-master"
     },
     "autoload": {
-        "classmap": ["src/"]
+        "psr-4": {
+            "Nijens\\Utilities\\": "src/"
+        }
     }
 }
