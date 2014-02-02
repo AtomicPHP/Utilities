@@ -2,6 +2,7 @@
 
 namespace Nijens\Utilities\Tests;
 
+use PHPUnit_Framework_TestCase;
 use Nijens\Utilities\UnregisterableCallback;
 
 /**
@@ -10,7 +11,7 @@ use Nijens\Utilities\UnregisterableCallback;
  * @author  Niels Nijens <nijens.niels@gmail.com>
  * @package Nijens\Utilities\Tests
  **/
-class UnregisterableCallbackTest extends \PHPUnit_Framework_TestCase
+class UnregisterableCallbackTest extends PHPUnit_Framework_TestCase
 {
     /**
      * testWithValidCallback

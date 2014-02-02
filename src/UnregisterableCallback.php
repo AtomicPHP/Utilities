@@ -2,7 +2,7 @@
 
 namespace Nijens\Utilities;
 
-use \InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
  * UnregisterableCallback
