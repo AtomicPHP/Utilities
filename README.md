@@ -4,6 +4,7 @@ Utility classes for PHP5.3+
 
 [![Build Status](https://travis-ci.org/niels-nijens/Utilities.png?branch=master)](https://travis-ci.org/niels-nijens/Utilities)
 [![Coverage Status](https://coveralls.io/repos/niels-nijens/Utilities/badge.png?branch=master)](https://coveralls.io/r/niels-nijens/Utilities?branch=master)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/65090c4c-8b60-4951-9cc2-922494cbffb2/mini.png)](https://insight.sensiolabs.com/projects/65090c4c-8b60-4951-9cc2-922494cbffb2)
 [![Latest Stable Version](https://poser.pugx.org/niels-nijens/utilities/v/stable.png)](https://packagist.org/packages/niels-nijens/utilities)
 
 
