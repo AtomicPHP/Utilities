@@ -49,7 +49,7 @@ class UnregisterableCallback
      **/
     public function call()
     {
-        if ($this->callback == null) {
+        if ($this->callback === null) {
             return;
         }
 
