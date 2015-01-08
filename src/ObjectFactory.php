@@ -3,6 +3,7 @@
 namespace Nijens\Utilities;
 
 use ReflectionClass;
+use ReflectionMethod;
 
 /**
  * ObjectFactory
