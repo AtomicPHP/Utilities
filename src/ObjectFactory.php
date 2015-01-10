@@ -53,7 +53,7 @@ class ObjectFactory extends AbstractSingleton
                 if (isset($constructorArguments[$parameter->getName() ] ) ) {
                     $arguments[] = $constructorArguments[$parameter->getName() ];
                 }
-                else {
+                elseif ($parameter->isDefaultValueAvailable() ) {
                     $arguments[] = $parameter->getDefaultValue();
                 }
             }
