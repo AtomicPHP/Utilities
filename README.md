@@ -15,7 +15,7 @@ Add the following to your composer.json:
 ```
 {
     "require": {
-        "niels-nijens/utilities": "~2.0"
+        "niels-nijens/utilities": "~3.0"
     }
 }
 ```
