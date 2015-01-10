@@ -11,34 +11,8 @@ use ReflectionMethod;
  * @author  Niels Nijens <nijens.niels@gmail.com>
  * @package Nijens\Utilities
  **/
-class ObjectFactory
+class ObjectFactory extends AbstractSingleton
 {
-    /**
-     * The ObjectFactory instance
-     *
-     * @access private
-     * @var    ObjectFactory
-     **/
-    private static $instance;
-
-    /**
-     * getInstance
-     *
-     * Returns the ObjectFactory instance
-     *
-     * @access public
-     * @return ObjectFactory
-     **/
-    public static function getInstance()
-    {
-        $class = new ReflectionClass(get_called_class() );
-        if ($class->isInstance(static::$instance) === false) {
-            static::$instance = $class->newInstanceArgs(func_get_args() );
-        }
-
-        return static::$instance;
-    }
-
     /**
      * newInstance
      *
