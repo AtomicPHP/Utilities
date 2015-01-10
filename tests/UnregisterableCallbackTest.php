@@ -54,6 +54,7 @@ class UnregisterableCallbackTest extends PHPUnit_Framework_TestCase
      * Tests if UnregisterableCallback throws an InvalidArgumentException when the first argument is not callable
      *
      * @expectedException InvalidArgumentException
+     *
      * @access public
      * @return void
      **/
