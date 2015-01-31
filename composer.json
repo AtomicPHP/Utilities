@@ -26,6 +26,9 @@
         }
     },
     "autoload-dev": {
+        "classmap": [
+            "tests/Resources/mockclasses/"
+        ],
         "psr-4": {
             "Nijens\\Utilities\\Tests\\": "tests/"
         }
