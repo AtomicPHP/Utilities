@@ -82,7 +82,7 @@ class Configuration {
             $dom = new DOMDocument("1.0", "UTF-8");
             $dom->load($configurationFile);
 
-            $this->validateConfiguration($dom);
+            $this->setDOMDocument($dom);
         }
         elseif ($configurationFile !== $this->defaultConfigurationFile && is_file($this->defaultConfigurationFile) ) {
             $this->loadConfiguration($this->defaultConfigurationFile);
