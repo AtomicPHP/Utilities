@@ -90,6 +90,19 @@ class Configuration {
     }
 
     /**
+     * setDOMDocument
+     *
+     * Validates and sets the DOMDocument instance containing the configuration
+     *
+     * @access public
+     * @param  DOMDocument $dom
+     * @return void
+     **/
+    public function setDOMDocument(DOMDocument $dom) {
+        $this->validateConfiguration($dom);
+    }
+
+    /**
      * getDOMDocument
      *
      * Returns the loaded DOMDocument instance
