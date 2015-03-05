@@ -81,6 +81,23 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     * testGetDOMDocumentReturnsLoadedDOMDocument
+     *
+     * Tests if Configuration::getDOMDocument returns the loaded DOMDocument instance
+     *
+     * @depends testGetWithDefaultConfiguration
+     *
+     * @access public
+     * @return void
+     **/
+    public function testGetDOMDocumentReturnsLoadedDOMDocument() {
+        $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
+        $configuration->loadConfiguration(null);
+
+        $this->assertInstanceOf("DOMDocument", $configuration->getDOMDocument() );
+    }
+
+    /**
      * testToBoolean
      *
      * Tests if Configuration::toBoolean returns the expected result
