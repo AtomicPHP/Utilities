@@ -94,6 +94,8 @@ class Configuration {
      *
      * Validates and sets the DOMDocument instance containing the configuration
      *
+     * @api
+     *
      * @access public
      * @param  DOMDocument $dom
      * @return void
