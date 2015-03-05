@@ -90,6 +90,20 @@ class Configuration {
     }
 
     /**
+     * getDOMDocument
+     *
+     * Returns the loaded DOMDocument instance
+     *
+     * @api
+     *
+     * @access public
+     * @return DOMDocument
+     **/
+    public function getDOMDocument() {
+        return $this->dom;
+    }
+
+    /**
      * get
      *
      * Returns an array representation of the XML nodes from the requested $xpathExpression
