@@ -201,7 +201,9 @@ class Configuration {
             }
             else {
                 $this->triggerHumanReadableErrors();
-                $this->loadConfiguration($this->defaultConfigurationFile);
+                if ($dom->documentURI !== $this->defaultConfigurationFile) {
+                    $this->loadConfiguration($this->defaultConfigurationFile);
+                }
             }
 
             libxml_use_internal_errors(false);

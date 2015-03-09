@@ -2,8 +2,10 @@
 
 namespace Nijens\Utilities\Tests;
 
-use PHPUnit_Framework_TestCase;
+use DOMDocument;
 use Nijens\Utilities\Configuration;
+use PHPUnit_Framework_Error_Warning;
+use PHPUnit_Framework_TestCase;
 
 /**
  * ConfigurationTest
@@ -24,6 +26,30 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
     public function testLoadDefaultConfiguration() {
         $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
         $configuration->loadConfiguration(null);
+    }
+
+    /**
+     * testLoadInvalidDefaultConfigurationDoesNotLoopLoadingAttempts
+     *
+     * Tests if loading an invalid default configuration does not create a loadConfiguration call loop
+     *
+     * @depends testLoadDefaultConfiguration
+     *
+     * @access public
+     * @return void
+     **/
+    public function testLoadInvalidDefaultConfigurationDoesNotLoopLoadingAttempts() {
+        $configurationMock = $this->getMockBuilder("Nijens\\Utilities\\Configuration")
+            ->setConstructorArgs(array(__DIR__ . "/Resources/configuration/invalid.xml", __DIR__ . "/Resources/xsd/default.xsd") )
+            ->setMethods(array("loadConfiguration") )
+            ->getMock();
+
+        $configurationMock->expects($this->never() )->method("loadConfiguration");
+
+        $dom = new DOMDocument("1.0", "UTF-8");
+        $dom->load(__DIR__ . "/Resources/configuration/invalid.xml");
+
+        @$configurationMock->setDOMDocument($dom);
     }
 
     /**
