@@ -93,4 +93,25 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
         $objectFactory = ObjectFactory::getInstance();
         $objectFactory->newInstance("Nijens\\Utilities\\Tests\\MockObjectMultipleArguments", array("argument" => "test", "thirdArgument" => "test3") );
     }
+
+    /**
+     * testNewInstanceSetsSecondArgumentWithNullValue
+     *
+     * Tests if ObjectFactory::newInstance sets the second argument with a null value
+     *
+     * @access public
+     * @return null
+     **/
+    public function testNewInstanceSetsSecondArgumentWithNullValue() {
+        $argumentValue = "test";
+        $secondArgumentValue = null;
+        $thirdArgumentValue = "test3";
+
+        $objectFactory = ObjectFactory::getInstance();
+        $instance = $objectFactory->newInstance("Nijens\\Utilities\\Tests\\MockObjectMultipleArguments", array("argument" => $argumentValue, "secondArgument" => $secondArgumentValue, "thirdArgument" => $thirdArgumentValue) );
+
+        $this->assertSame($argumentValue, $instance->argument);
+        $this->assertSame($secondArgumentValue, $instance->secondArgument);
+        $this->assertSame($thirdArgumentValue, $instance->thirdArgument);
+    }
 }

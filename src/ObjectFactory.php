@@ -50,7 +50,7 @@ class ObjectFactory extends AbstractSingleton
         $arguments = array();
         if ( ($constructorMethod = $class->getConstructor() ) instanceof ReflectionMethod) {
             foreach ($constructorMethod->getParameters() as $parameter) {
-                if (isset($constructorArguments[$parameter->getName() ] ) ) {
+                if (array_key_exists($parameter->getName(), $constructorArguments) ) {
                     $arguments[] = $constructorArguments[$parameter->getName() ];
                 }
                 elseif ($parameter->isDefaultValueAvailable() ) {
