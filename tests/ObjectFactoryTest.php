@@ -19,7 +19,7 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
      * Tests if ObjectFactory::getInstance returns an ObjectFactory instance
      *
      * @access public
-     * @return void
+     * @return null
      **/
     public function testGetInstance()
     {
@@ -32,7 +32,7 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
      * Tests if ObjectFactory::newInstance creates a new instance
      *
      * @access public
-     * @return void
+     * @return null
      **/
     public function testNewInstance()
     {
@@ -49,7 +49,7 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
      * @depends testNewInstance
      *
      * @access public
-     * @return void
+     * @return null
      **/
     public function testNewInstanceWithArgumentArray()
     {
@@ -69,12 +69,28 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
      * @depends testNewInstance
      *
      * @access public
-     * @return void
+     * @return null
      **/
     public function testNewInstanceWithNonExistingClassNameReturnsNull()
     {
         $objectFactory = ObjectFactory::getInstance();
 
         $this->assertNull($objectFactory->newInstance("Nijens\\Utilities\\Tests\\NonExistingClass") );
+    }
+
+    /**
+     * testNewInstanceWithMissingArgumentsTriggersError
+     *
+     * Tests if ObjectFactory::newInstance triggers an missing argument error due to secondArgument key missing in the array
+     *
+     * @expectedException        PHPUnit_Framework_Error_Warning
+     * @expectedExceptionMessage Missing argument 2 for Nijens\Utilities\Tests\MockObjectMultipleArguments::__construct()
+     *
+     * @access public
+     * @return null
+     **/
+    public function testNewInstanceWithMissingArgumentsTriggersError() {
+        $objectFactory = ObjectFactory::getInstance();
+        $objectFactory->newInstance("Nijens\\Utilities\\Tests\\MockObjectMultipleArguments", array("argument" => "test", "thirdArgument" => "test3") );
     }
 }

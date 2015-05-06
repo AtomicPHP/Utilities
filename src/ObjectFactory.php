@@ -56,6 +56,9 @@ class ObjectFactory extends AbstractSingleton
                 elseif ($parameter->isDefaultValueAvailable() ) {
                     $arguments[] = $parameter->getDefaultValue();
                 }
+                else {
+                    break;
+                }
             }
         }
 
