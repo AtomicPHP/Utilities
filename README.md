@@ -10,14 +10,10 @@ Utility classes for PHP5.4+
 
 Installation using Composer
 ---------------------------
-Add the following to your composer.json:
+Run the following command to add the package to your composer.json:
 
 ```
-{
-    "require": {
-        "niels-nijens/utilities": "~3.0"
-    }
-}
+composer require niels-nijens/utilities
 ```
 
 
