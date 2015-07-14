@@ -23,15 +23,15 @@ class ObjectFactory extends AbstractSingleton
      *
      * @access public
      * @param  string $className
-     * @param  array  $constructorArguments  An array with key-value pairs for constructor arguments
+     * @param  array  $constructorArguments An array with key-value pairs for constructor arguments
      * @return mixed
      **/
-    public function newInstance($className, array $constructorArguments = array() )
+    public function newInstance($className, array $constructorArguments = array())
     {
-        if (class_exists($className) ) {
+        if (class_exists($className)) {
             $class = new ReflectionClass($className);
 
-            return $class->newInstanceArgs($this->getArgumentsFromConstructorArguments($class, $constructorArguments) );
+            return $class->newInstanceArgs($this->getArgumentsFromConstructorArguments($class, $constructorArguments));
         }
     }
 
@@ -48,15 +48,13 @@ class ObjectFactory extends AbstractSingleton
     protected function getArgumentsFromConstructorArguments(ReflectionClass $class, array $constructorArguments)
     {
         $arguments = array();
-        if ( ($constructorMethod = $class->getConstructor() ) instanceof ReflectionMethod) {
+        if (($constructorMethod = $class->getConstructor()) instanceof ReflectionMethod) {
             foreach ($constructorMethod->getParameters() as $parameter) {
-                if (array_key_exists($parameter->getName(), $constructorArguments) ) {
+                if (array_key_exists($parameter->getName(), $constructorArguments)) {
                     $arguments[] = $constructorArguments[$parameter->getName() ];
-                }
-                elseif ($parameter->isDefaultValueAvailable() ) {
+                } elseif ($parameter->isDefaultValueAvailable()) {
                     $arguments[] = $parameter->getDefaultValue();
-                }
-                else {
+                } else {
                     break;
                 }
             }

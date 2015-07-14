@@ -12,5 +12,4 @@ use Nijens\Utilities\AbstractSingleton;
  **/
 class MockSingleton extends AbstractSingleton
 {
-
 }

@@ -14,6 +14,5 @@ class MockSingletonPublicConstructor extends AbstractSingleton
 {
     public function __construct()
     {
-
     }
 }

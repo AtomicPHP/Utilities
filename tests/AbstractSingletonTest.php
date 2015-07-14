@@ -22,7 +22,7 @@ class AbstractSingletonTest extends PHPUnit_Framework_TestCase
      **/
     public function testGetInstanceReturnsInstanceOfSubclass()
     {
-        $this->assertInstanceOf("Nijens\\Utilities\\Tests\\MockSingleton", MockSingleton::getInstance() );
+        $this->assertInstanceOf('Nijens\\Utilities\\Tests\\MockSingleton', MockSingleton::getInstance());
     }
 
     /**
@@ -39,7 +39,7 @@ class AbstractSingletonTest extends PHPUnit_Framework_TestCase
     {
         $instance = MockSingleton::getInstance();
 
-        $this->assertSame($instance, MockSingleton::getInstance() );
+        $this->assertSame($instance, MockSingleton::getInstance());
     }
 
     /**
@@ -52,10 +52,10 @@ class AbstractSingletonTest extends PHPUnit_Framework_TestCase
      **/
     public function testGetInstanceCallsConstructor()
     {
-        $instance = MockSingletonConstructor::getInstance("test");
+        $instance = MockSingletonConstructor::getInstance('test');
 
-        $this->assertInstanceOf("Nijens\\Utilities\\Tests\\MockSingletonConstructor", $instance);
-        $this->assertSame("test", $instance->argument);
+        $this->assertInstanceOf('Nijens\\Utilities\\Tests\\MockSingletonConstructor', $instance);
+        $this->assertSame('test', $instance->argument);
     }
 
     /**

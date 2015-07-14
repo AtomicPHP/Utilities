@@ -13,13 +13,13 @@ use DOMXPath;
  * @author  Niels Nijens <niels@connectholland.nl>
  * @package Nijens\Utilities
  **/
-class Configuration {
-
+class Configuration
+{
     /**
      * The location of the default XML configuration file
      *
      * @access private
-     * @var    string|null
+     * @var string|null
      **/
     private $defaultConfigurationFile;
 
@@ -27,7 +27,7 @@ class Configuration {
      * The location of the XSD file for configuration validation
      *
      * @access private
-     * @var    string|null
+     * @var string|null
      **/
     private $xsdSchemaFile;
 
@@ -35,7 +35,7 @@ class Configuration {
      * The DOMDocument instance with the loaded configuration
      *
      * @access private
-     * @var    DOMDocument
+     * @var DOMDocument
      **/
     private $dom;
 
@@ -43,7 +43,7 @@ class Configuration {
      * The DOMXPath instance for the loaded configuration
      *
      * @access private
-     * @var    DOMXPath
+     * @var DOMXPath
      **/
     private $xpath;
 
@@ -57,11 +57,12 @@ class Configuration {
      * @param  string|null $xsdSchemaFile            Location of the XSD file for configuration validation
      * @return void
      **/
-    public function __construct($defaultConfigurationFile = null, $xsdSchemaFile = null) {
-        if (is_file($defaultConfigurationFile) ) {
+    public function __construct($defaultConfigurationFile = null, $xsdSchemaFile = null)
+    {
+        if (is_file($defaultConfigurationFile)) {
             $this->defaultConfigurationFile = $defaultConfigurationFile;
         }
-        if (is_file($xsdSchemaFile) ) {
+        if (is_file($xsdSchemaFile)) {
             $this->xsdSchemaFile = $xsdSchemaFile;
         }
     }
@@ -77,14 +78,14 @@ class Configuration {
      * @param  string $configurationFile
      * @return void
      **/
-    public function loadConfiguration($configurationFile) {
-        if (is_file($configurationFile) ) {
-            $dom = new DOMDocument("1.0", "UTF-8");
+    public function loadConfiguration($configurationFile)
+    {
+        if (is_file($configurationFile)) {
+            $dom = new DOMDocument('1.0', 'UTF-8');
             $dom->load($configurationFile);
 
             $this->setDOMDocument($dom);
-        }
-        elseif ($configurationFile !== $this->defaultConfigurationFile && is_file($this->defaultConfigurationFile) ) {
+        } elseif ($configurationFile !== $this->defaultConfigurationFile && is_file($this->defaultConfigurationFile)) {
             $this->loadConfiguration($this->defaultConfigurationFile);
         }
     }
@@ -100,7 +101,8 @@ class Configuration {
      * @param  DOMDocument $dom
      * @return void
      **/
-    public function setDOMDocument(DOMDocument $dom) {
+    public function setDOMDocument(DOMDocument $dom)
+    {
         $this->validateConfiguration($dom);
     }
 
@@ -114,7 +116,8 @@ class Configuration {
      * @access public
      * @return DOMDocument
      **/
-    public function getDOMDocument() {
+    public function getDOMDocument()
+    {
         return $this->dom;
     }
 
@@ -130,17 +133,17 @@ class Configuration {
      * @param  boolean    $alwaysReturnArray
      * @return array|null
      **/
-    public function get($xpathExpression, $alwaysReturnArray = false) {
+    public function get($xpathExpression, $alwaysReturnArray = false)
+    {
         $nodeList = @$this->xpath->query($xpathExpression);
         if ($nodeList instanceof DOMNodeList) {
             if ($nodeList->length === 1) {
                 if ($alwaysReturnArray === true) {
-                    return array($this->nodeToArray($nodeList->item(0) ) );
+                    return array($this->nodeToArray($nodeList->item(0)));
                 }
 
-                return $this->nodeToArray($nodeList->item(0) );
-            }
-            else {
+                return $this->nodeToArray($nodeList->item(0));
+            } else {
                 $result = array();
                 foreach ($nodeList as $node) {
                     $result[] = $this->nodeToArray($node);
@@ -148,8 +151,7 @@ class Configuration {
 
                 return $result;
             }
-        }
-        elseif ($alwaysReturnArray === true) {
+        } elseif ($alwaysReturnArray === true) {
             return array();
         }
     }
@@ -165,16 +167,15 @@ class Configuration {
      * @param  mixed   $value
      * @return boolean
      **/
-    public static function toBoolean($value) {
-        if (is_string($value) ) {
-            if ($value === "true") {
+    public static function toBoolean($value)
+    {
+        if (is_string($value)) {
+            if ($value === 'true') {
                 $value = true;
-            }
-            else {
+            } else {
                 $value = false;
             }
-        }
-        elseif (is_bool($value) === false) {
+        } elseif (is_bool($value) === false) {
             $value = false;
         }
 
@@ -190,16 +191,16 @@ class Configuration {
      * @param  DOMDocument $dom
      * @return void
      **/
-    private function validateConfiguration(DOMDocument $dom) {
-        if (is_file($this->xsdSchemaFile) ) {
+    private function validateConfiguration(DOMDocument $dom)
+    {
+        if (is_file($this->xsdSchemaFile)) {
             libxml_use_internal_errors(true);
-            if (@$dom->schemaValidate($this->xsdSchemaFile/*, LIBXML_SCHEMA_CREATE*/) ) {
+            if (@$dom->schemaValidate($this->xsdSchemaFile/*, LIBXML_SCHEMA_CREATE*/)) {
                 $this->dom = $dom;
                 $this->xpath = new DOMXPath($dom);
 
                 $this->cleanupDOMDocument();
-            }
-            else {
+            } else {
                 $this->triggerHumanReadableErrors();
                 if ($dom->documentURI !== $this->defaultConfigurationFile) {
                     $this->loadConfiguration($this->defaultConfigurationFile);
@@ -218,10 +219,11 @@ class Configuration {
      * @access private
      * @return void
      **/
-    private function cleanupDOMDocument() {
+    private function cleanupDOMDocument()
+    {
         $expressions = array(
-            "//comment()",
-            "//processing-instruction()"
+            '//comment()',
+            '//processing-instruction()',
         );
 
         foreach ($expressions as $expression) {
@@ -243,10 +245,11 @@ class Configuration {
      * @access private
      * @return void
      **/
-    private function triggerHumanReadableErrors() {
+    private function triggerHumanReadableErrors()
+    {
         $errors = libxml_get_errors();
         foreach ($errors as $error) {
-            trigger_error("Line " . $error->line . ": '" . $error->message . "' in '" . $error->file . "' -", E_USER_WARNING);
+            trigger_error('Line ' . $error->line . ": '" . $error->message . "' in '" . $error->file . "' -", E_USER_WARNING);
         }
 
         libxml_clear_errors();
@@ -261,8 +264,9 @@ class Configuration {
      * @param  DOMNode $node
      * @return array
      **/
-    private function nodeToArray(DOMNode $node) {
-        $xml = simplexml_import_dom($node, "Nijens\\Utilities\\Configuration\\JSONSerializableXMLElement");
+    private function nodeToArray(DOMNode $node)
+    {
+        $xml = simplexml_import_dom($node, 'Nijens\\Utilities\\Configuration\\JSONSerializableXMLElement');
         $json = json_encode($xml);
 
         return json_decode($json, true);

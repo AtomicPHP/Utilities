@@ -2,8 +2,8 @@
 
 namespace Nijens\Utilities\Tests;
 
-use PHPUnit_Framework_TestCase;
 use Nijens\Utilities\UnregisterableCallback;
+use PHPUnit_Framework_TestCase;
 
 /**
  * UnregisterableCallbackTest
@@ -23,11 +23,11 @@ class UnregisterableCallbackTest extends PHPUnit_Framework_TestCase
      **/
     public function testWithValidCallback()
     {
-        $unregisterableCallback = new UnregisterableCallback(function() {
+        $unregisterableCallback = new UnregisterableCallback(function () {
             return true;
         });
 
-        $this->assertTrue($unregisterableCallback->call() );
+        $this->assertTrue($unregisterableCallback->call());
     }
 
     /**
@@ -40,12 +40,12 @@ class UnregisterableCallbackTest extends PHPUnit_Framework_TestCase
      **/
     public function testWithValidCallbackNotCalledAfterUnregister()
     {
-        $unregisterableCallback = new UnregisterableCallback(function() {
+        $unregisterableCallback = new UnregisterableCallback(function () {
             return true;
         });
         $unregisterableCallback->unregister();
 
-        $this->assertNull($unregisterableCallback->call() );
+        $this->assertNull($unregisterableCallback->call());
     }
 
     /**

@@ -2,8 +2,8 @@
 
 namespace Nijens\Utilities\Tests;
 
-use PHPUnit_Framework_TestCase;
 use Nijens\Utilities\ObjectFactory;
+use PHPUnit_Framework_TestCase;
 
 /**
  * ObjectFactoryTest
@@ -23,7 +23,7 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
      **/
     public function testGetInstance()
     {
-        $this->assertInstanceOf("Nijens\\Utilities\\ObjectFactory", ObjectFactory::getInstance() );
+        $this->assertInstanceOf('Nijens\\Utilities\\ObjectFactory', ObjectFactory::getInstance());
     }
 
     /**
@@ -38,7 +38,7 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
     {
         $objectFactory = ObjectFactory::getInstance();
 
-        $this->assertInstanceOf("Nijens\\Utilities\\Tests\\MockObject", $objectFactory->newInstance("Nijens\\Utilities\\Tests\\MockObject") );
+        $this->assertInstanceOf('Nijens\\Utilities\\Tests\\MockObject', $objectFactory->newInstance('Nijens\\Utilities\\Tests\\MockObject'));
     }
 
     /**
@@ -53,10 +53,10 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
      **/
     public function testNewInstanceWithArgumentArray()
     {
-        $argumentValue = "test";
+        $argumentValue = 'test';
 
         $objectFactory = ObjectFactory::getInstance();
-        $instance = $objectFactory->newInstance("Nijens\\Utilities\\Tests\\MockObject", array("argument" => $argumentValue) );
+        $instance = $objectFactory->newInstance('Nijens\\Utilities\\Tests\\MockObject', array('argument' => $argumentValue));
 
         $this->assertSame($argumentValue, $instance->argument);
     }
@@ -75,7 +75,7 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
     {
         $objectFactory = ObjectFactory::getInstance();
 
-        $this->assertNull($objectFactory->newInstance("Nijens\\Utilities\\Tests\\NonExistingClass") );
+        $this->assertNull($objectFactory->newInstance('Nijens\\Utilities\\Tests\\NonExistingClass'));
     }
 
     /**
@@ -89,9 +89,10 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
      * @access public
      * @return null
      **/
-    public function testNewInstanceWithMissingArgumentsTriggersError() {
+    public function testNewInstanceWithMissingArgumentsTriggersError()
+    {
         $objectFactory = ObjectFactory::getInstance();
-        $objectFactory->newInstance("Nijens\\Utilities\\Tests\\MockObjectMultipleArguments", array("argument" => "test", "thirdArgument" => "test3") );
+        $objectFactory->newInstance('Nijens\\Utilities\\Tests\\MockObjectMultipleArguments', array('argument' => 'test', 'thirdArgument' => 'test3'));
     }
 
     /**
@@ -102,13 +103,14 @@ class ObjectFactoryTest extends PHPUnit_Framework_TestCase
      * @access public
      * @return null
      **/
-    public function testNewInstanceSetsSecondArgumentWithNullValue() {
-        $argumentValue = "test";
+    public function testNewInstanceSetsSecondArgumentWithNullValue()
+    {
+        $argumentValue = 'test';
         $secondArgumentValue = null;
-        $thirdArgumentValue = "test3";
+        $thirdArgumentValue = 'test3';
 
         $objectFactory = ObjectFactory::getInstance();
-        $instance = $objectFactory->newInstance("Nijens\\Utilities\\Tests\\MockObjectMultipleArguments", array("argument" => $argumentValue, "secondArgument" => $secondArgumentValue, "thirdArgument" => $thirdArgumentValue) );
+        $instance = $objectFactory->newInstance('Nijens\\Utilities\\Tests\\MockObjectMultipleArguments', array('argument' => $argumentValue, 'secondArgument' => $secondArgumentValue, 'thirdArgument' => $thirdArgumentValue));
 
         $this->assertSame($argumentValue, $instance->argument);
         $this->assertSame($secondArgumentValue, $instance->secondArgument);

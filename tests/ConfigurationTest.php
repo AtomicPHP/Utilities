@@ -13,8 +13,8 @@ use PHPUnit_Framework_TestCase;
  * @author  Niels Nijens <niels@connectholland.nl>
  * @package Nijens\Utilities\Tests
  **/
-class ConfigurationTest extends PHPUnit_Framework_TestCase {
-
+class ConfigurationTest extends PHPUnit_Framework_TestCase
+{
     /**
      * testLoadDefaultConfiguration
      *
@@ -23,8 +23,9 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      * @access public
      * @return void
      **/
-    public function testLoadDefaultConfiguration() {
-        $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
+    public function testLoadDefaultConfiguration()
+    {
+        $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd');
         $configuration->loadConfiguration(null);
     }
 
@@ -38,16 +39,17 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      * @access public
      * @return void
      **/
-    public function testLoadInvalidDefaultConfigurationDoesNotLoopLoadingAttempts() {
-        $configurationMock = $this->getMockBuilder("Nijens\\Utilities\\Configuration")
-            ->setConstructorArgs(array(__DIR__ . "/Resources/configuration/invalid.xml", __DIR__ . "/Resources/xsd/default.xsd") )
-            ->setMethods(array("loadConfiguration") )
+    public function testLoadInvalidDefaultConfigurationDoesNotLoopLoadingAttempts()
+    {
+        $configurationMock = $this->getMockBuilder('Nijens\\Utilities\\Configuration')
+            ->setConstructorArgs(array(__DIR__ . '/Resources/configuration/invalid.xml', __DIR__ . '/Resources/xsd/default.xsd'))
+            ->setMethods(array('loadConfiguration'))
             ->getMock();
 
-        $configurationMock->expects($this->never() )->method("loadConfiguration");
+        $configurationMock->expects($this->never())->method('loadConfiguration');
 
-        $dom = new DOMDocument("1.0", "UTF-8");
-        $dom->load(__DIR__ . "/Resources/configuration/invalid.xml");
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->load(__DIR__ . '/Resources/configuration/invalid.xml');
 
         @$configurationMock->setDOMDocument($dom);
     }
@@ -62,9 +64,10 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      * @access public
      * @return void
      **/
-    public function testLoadInvalidConfigurationTriggersErrors() {
-        $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
-        $configuration->loadConfiguration(__DIR__ . "/Resources/configuration/invalid.xml");
+    public function testLoadInvalidConfigurationTriggersErrors()
+    {
+        $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd');
+        $configuration->loadConfiguration(__DIR__ . '/Resources/configuration/invalid.xml');
     }
 
     /**
@@ -80,12 +83,13 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      * @param  array|string $expectedResult
      * @return void
      **/
-    public function testGetWithDefaultConfiguration($xpathExpression, $alwaysReturnArray, $expectedResult) {
-        $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
+    public function testGetWithDefaultConfiguration($xpathExpression, $alwaysReturnArray, $expectedResult)
+    {
+        $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd');
         $configuration->loadConfiguration(null);
 
-        $this->assertEquals($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray) );
-        $this->assertSame($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray) );
+        $this->assertEquals($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray));
+        $this->assertSame($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray));
     }
 
     /**
@@ -99,11 +103,12 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      * @access public
      * @return void
      **/
-    public function testLoadInvalidConfigurationLoadsDefaultConfigurationAfterTriggeringErrors() {
-        $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
-        @$configuration->loadConfiguration(__DIR__ . "/Resources/configuration/invalid.xml");
+    public function testLoadInvalidConfigurationLoadsDefaultConfigurationAfterTriggeringErrors()
+    {
+        $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd');
+        @$configuration->loadConfiguration(__DIR__ . '/Resources/configuration/invalid.xml');
 
-        $this->assertEquals("Text content", $configuration->get("/test/fuzzy") );
+        $this->assertEquals('Text content', $configuration->get('/test/fuzzy'));
     }
 
     /**
@@ -116,11 +121,12 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      * @access public
      * @return void
      **/
-    public function testGetDOMDocumentReturnsLoadedDOMDocument() {
-        $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
+    public function testGetDOMDocumentReturnsLoadedDOMDocument()
+    {
+        $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd');
         $configuration->loadConfiguration(null);
 
-        $this->assertInstanceOf("DOMDocument", $configuration->getDOMDocument() );
+        $this->assertInstanceOf('DOMDocument', $configuration->getDOMDocument());
     }
 
     /**
@@ -135,8 +141,9 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      * @param  boolean $expectedResult
      * @return void
      **/
-    public function testToBoolean($value, $expectedResult) {
-        $this->assertSame($expectedResult, Configuration::toBoolean($value) );
+    public function testToBoolean($value, $expectedResult)
+    {
+        $this->assertSame($expectedResult, Configuration::toBoolean($value));
     }
 
     /**
@@ -147,39 +154,40 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      * @access public
      * @return array
      **/
-    public function provideTestGetWithDefaultConfiguration() {
+    public function provideTestGetWithDefaultConfiguration()
+    {
         return array(
-            array("/test/foo", false, array(
-                    "bar" => "bar attribute",
-                    "foo" => array(
-                        "bar" => "more bar attribute"
-                    )
-                )
+            array('/test/foo', false, array(
+                    'bar' => 'bar attribute',
+                    'foo' => array(
+                        'bar' => 'more bar attribute',
+                    ),
+                ),
             ),
-            array("/test/bar", false, array(
-                    "fuzz" => array(
+            array('/test/bar', false, array(
+                    'fuzz' => array(
                         array(
-                            "id" => "fuzzy"
+                            'id' => 'fuzzy',
                         ),
                         array(
-                            "id" => "very fuzzy"
-                        )
-                    )
-                )
+                            'id' => 'very fuzzy',
+                        ),
+                    ),
+                ),
             ),
-            array("/test/bar/fuzz", false, array(
+            array('/test/bar/fuzz', false, array(
                     array(
-                        "id" => "fuzzy"
+                        'id' => 'fuzzy',
                     ),
                     array(
-                        "id" => "very fuzzy"
-                    )
-                )
+                        'id' => 'very fuzzy',
+                    ),
+                ),
             ),
-            array("/test/fuzzy", false, "Text content"),
-            array("/test/fuzzy", true, array("Text content") ),
-            array("/test[]/non-existing", false, null),
-            array("/test[]/non-existing", true, array() ),
+            array('/test/fuzzy', false, 'Text content'),
+            array('/test/fuzzy', true, array('Text content')),
+            array('/test[]/non-existing', false, null),
+            array('/test[]/non-existing', true, array()),
         );
     }
 
@@ -191,14 +199,15 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      * @access public
      * @return array
      **/
-    public function provideTestToBoolean() {
+    public function provideTestToBoolean()
+    {
         return array(
             array(true, true),
-            array("true", true),
+            array('true', true),
             array(false, false),
-            array("false", false),
-            array("ja", false),
-            array("nee", false),
+            array('false', false),
+            array('ja', false),
+            array('nee', false),
             array(array(), false),
             array(new \stdClass(), false),
         );

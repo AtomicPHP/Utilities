@@ -17,7 +17,7 @@ abstract class AbstractSingleton
      * The array with instances extending from AbstractSingleton
      *
      * @access private
-     * @var    array
+     * @var array
      **/
     private static $instances = array();
 
@@ -32,16 +32,16 @@ abstract class AbstractSingleton
      **/
     public static function getInstance()
     {
-        $class = new ReflectionClass(get_called_class() );
+        $class = new ReflectionClass(get_called_class());
         $className = $class->getName();
-        if (isset(self::$instances[$className] ) === false || $class->isInstance(self::$instances[$className] ) === false) {
+        if (isset(self::$instances[$className]) === false || $class->isInstance(self::$instances[$className]) === false) {
             self::$instances[$className] = $class->newInstanceWithoutConstructor();
 
-            if ( ($constructorMethod = $class->getConstructor() ) instanceof ReflectionMethod) {
-                call_user_func_array(array(self::$instances[$className], "__construct"), func_get_args() );
+            if (($constructorMethod = $class->getConstructor()) instanceof ReflectionMethod) {
+                call_user_func_array(array(self::$instances[$className], '__construct'), func_get_args());
 
                 if ($constructorMethod->isPublic() === true) {
-                    trigger_error($className . "::__construct is public and could be instantiated as non-singleton.", E_USER_NOTICE);
+                    trigger_error($className . '::__construct is public and could be instantiated as non-singleton.', E_USER_NOTICE);
                     // @codeCoverageIgnoreStart
                 } // @codeCoverageIgnoreEnd
             }

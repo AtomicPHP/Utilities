@@ -16,7 +16,7 @@ class UnregisterableCallback
      * The callable function or class method
      *
      * @access protected
-     * @var    callable
+     * @var callable
      **/
     protected $callback;
 
@@ -26,14 +26,14 @@ class UnregisterableCallback
      * Creates a new instance of UnregisterableCallback
      *
      * @access public
-     * @param  callable $callback
+     * @param  callable                 $callback
      * @return UnregisterableCallback
      * @throws InvalidArgumentException
      **/
     public function __construct($callback)
     {
-        if (!is_callable($callback) ) {
-            throw new InvalidArgumentException("The argument is not callable callback");
+        if (!is_callable($callback)) {
+            throw new InvalidArgumentException('The argument is not callable callback');
         }
 
         $this->callback = $callback;
