@@ -12,7 +12,7 @@ use DOMXPath;
  *
  * @author  Niels Nijens <niels@connectholland.nl>
  * @package Nijens\Utilities
- **/
+ * */
 class Configuration {
 
     /**
@@ -20,7 +20,7 @@ class Configuration {
      *
      * @access private
      * @var    string|null
-     **/
+     * */
     private $defaultConfigurationFile;
 
     /**
@@ -28,7 +28,7 @@ class Configuration {
      *
      * @access private
      * @var    string|null
-     **/
+     * */
     private $xsdSchemaFile;
 
     /**
@@ -36,7 +36,7 @@ class Configuration {
      *
      * @access private
      * @var    DOMDocument
-     **/
+     * */
     private $dom;
 
     /**
@@ -44,8 +44,24 @@ class Configuration {
      *
      * @access private
      * @var    DOMXPath
-     **/
+     * */
     private $xpath;
+
+    /**
+     * Boolean indicating if configuration results should be cached
+     *
+     * @access private
+     * @var    boolean
+     * */
+    private $useCaching;
+
+    /**
+     * The cache (used only when caching is enabled)
+     *
+     * @access private
+     * @var    array
+     * */
+    private $cache;
 
     /**
      * __construct
@@ -53,16 +69,23 @@ class Configuration {
      * Constructs a new Configuration
      *
      * @access public
-     * @param  string|null $defaultConfigurationFile Location of the default XML configuration file
-     * @param  string|null $xsdSchemaFile            Location of the XSD file for configuration validation
+     * @param  string|null 	$defaultConfigurationFile Location of the default XML configuration file
+     * @param  string|null 	$xsdSchemaFile            Location of the XSD file for configuration validation
+     * @param  boolean|null 	$useCaching               Boolean indicating if caching should be used
      * @return void
-     **/
-    public function __construct($defaultConfigurationFile = null, $xsdSchemaFile = null) {
-        if (is_file($defaultConfigurationFile) ) {
+     * */
+    public function __construct($defaultConfigurationFile = null, $xsdSchemaFile = null, $useCaching = true) {
+        if (is_file($defaultConfigurationFile)) {
             $this->defaultConfigurationFile = $defaultConfigurationFile;
         }
-        if (is_file($xsdSchemaFile) ) {
+        if (is_file($xsdSchemaFile)) {
             $this->xsdSchemaFile = $xsdSchemaFile;
+        }
+
+        $this->useCaching = $useCaching;
+
+        if ($this->useCaching) {
+            $this->cache = ["alwaysArray" => [], "optionalArray" => [] ];
         }
     }
 
@@ -76,15 +99,14 @@ class Configuration {
      * @access public
      * @param  string $configurationFile
      * @return void
-     **/
+     * */
     public function loadConfiguration($configurationFile) {
-        if (is_file($configurationFile) ) {
+        if (is_file($configurationFile)) {
             $dom = new DOMDocument("1.0", "UTF-8");
             $dom->load($configurationFile);
 
             $this->setDOMDocument($dom);
-        }
-        elseif ($configurationFile !== $this->defaultConfigurationFile && is_file($this->defaultConfigurationFile) ) {
+        } elseif ($configurationFile !== $this->defaultConfigurationFile && is_file($this->defaultConfigurationFile)) {
             $this->loadConfiguration($this->defaultConfigurationFile);
         }
     }
@@ -99,9 +121,12 @@ class Configuration {
      * @access public
      * @param  DOMDocument $dom
      * @return void
-     **/
+     * */
     public function setDOMDocument(DOMDocument $dom) {
         $this->validateConfiguration($dom);
+        if (!$this->xpath instanceof DOMXPath) {
+            $this->xpath = new DOMXPath($dom);
+        }
     }
 
     /**
@@ -113,7 +138,7 @@ class Configuration {
      *
      * @access public
      * @return DOMDocument
-     **/
+     * */
     public function getDOMDocument() {
         return $this->dom;
     }
@@ -129,18 +154,45 @@ class Configuration {
      * @param  string     $xpathExpression
      * @param  boolean    $alwaysReturnArray
      * @return array|null
-     **/
+     * */
     public function get($xpathExpression, $alwaysReturnArray = false) {
+        if ($this->useCaching && $alwaysReturnArray) {
+            if (!array_key_exists($xpathExpression, $this->cache["alwaysArray"])) {
+                $this->cache["alwaysArray"][$xpathExpression] = $this->getConfiguration($xpathExpression, $alwaysReturnArray);
+            }
+            return $this->cache["alwaysArray"][$xpathExpression];
+        } elseif ($this->useCaching) {
+            if (!array_key_exists($xpathExpression, $this->cache["optionalArray"])) {
+                $this->cache["optionalArray"][$xpathExpression] = $this->getConfiguration($xpathExpression, $alwaysReturnArray);
+            }
+            return $this->cache["optionalArray"][$xpathExpression];
+        } else {
+            return $this->getConfiguration($xpathExpression, $alwaysReturnArray);
+        }
+    }
+
+    /**
+     * getConfiguration
+     *
+     * Returns an array representation of the XML nodes from the requested $xpathExpression
+     *
+     * @api
+     *
+     * @access private
+     * @param  string     $xpathExpression
+     * @param  boolean    $alwaysReturnArray
+     * @return array|null
+     * */
+    private function getConfiguration($xpathExpression, $alwaysReturnArray = false) {
         $nodeList = @$this->xpath->query($xpathExpression);
         if ($nodeList instanceof DOMNodeList) {
             if ($nodeList->length === 1) {
-                if ($alwaysReturnArray === true) {
-                    return array($this->nodeToArray($nodeList->item(0) ) );
+                if ($alwaysReturnArray) {
+                    return array($this->nodeToArray($nodeList->item(0)));
                 }
 
-                return $this->nodeToArray($nodeList->item(0) );
-            }
-            else {
+                return $this->nodeToArray($nodeList->item(0));
+            } else {
                 $result = array();
                 foreach ($nodeList as $node) {
                     $result[] = $this->nodeToArray($node);
@@ -148,8 +200,7 @@ class Configuration {
 
                 return $result;
             }
-        }
-        elseif ($alwaysReturnArray === true) {
+        } elseif ($alwaysReturnArray) {
             return array();
         }
     }
@@ -164,17 +215,15 @@ class Configuration {
      * @access public
      * @param  mixed   $value
      * @return boolean
-     **/
+     * */
     public static function toBoolean($value) {
-        if (is_string($value) ) {
+        if (is_string($value)) {
             if ($value === "true") {
                 $value = true;
-            }
-            else {
+            } else {
                 $value = false;
             }
-        }
-        elseif (is_bool($value) === false) {
+        } elseif (is_bool($value) === false) {
             $value = false;
         }
 
@@ -189,17 +238,16 @@ class Configuration {
      * @access private
      * @param  DOMDocument $dom
      * @return void
-     **/
+     * */
     private function validateConfiguration(DOMDocument $dom) {
-        if (is_file($this->xsdSchemaFile) ) {
+        if (is_file($this->xsdSchemaFile)) {
             libxml_use_internal_errors(true);
-            if (@$dom->schemaValidate($this->xsdSchemaFile/*, LIBXML_SCHEMA_CREATE*/) ) {
+            if (@$dom->schemaValidate($this->xsdSchemaFile/* , LIBXML_SCHEMA_CREATE */)) {
                 $this->dom = $dom;
                 $this->xpath = new DOMXPath($dom);
 
                 $this->cleanupDOMDocument();
-            }
-            else {
+            } else {
                 $this->triggerHumanReadableErrors();
                 if ($dom->documentURI !== $this->defaultConfigurationFile) {
                     $this->loadConfiguration($this->defaultConfigurationFile);
@@ -217,7 +265,7 @@ class Configuration {
      *
      * @access private
      * @return void
-     **/
+     * */
     private function cleanupDOMDocument() {
         $expressions = array(
             "//comment()",
@@ -242,7 +290,7 @@ class Configuration {
      *
      * @access private
      * @return void
-     **/
+     * */
     private function triggerHumanReadableErrors() {
         $errors = libxml_get_errors();
         foreach ($errors as $error) {
@@ -260,11 +308,12 @@ class Configuration {
      * @access private
      * @param  DOMNode $node
      * @return array
-     **/
+     * */
     private function nodeToArray(DOMNode $node) {
         $xml = simplexml_import_dom($node, "Nijens\\Utilities\\Configuration\\JSONSerializableXMLElement");
         $json = json_encode($xml);
 
         return json_decode($json, true);
     }
+
 }

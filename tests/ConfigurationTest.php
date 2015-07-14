@@ -68,9 +68,9 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * testGetWithDefaultConfiguration
+     * testGetWithDefaultConfigurationWithoutCache
      *
-     * Tests if Configuration::get returns the expected result from the default configuration
+     * Tests if Configuration::get returns the expected result from the default configuration (without caching)
      *
      * @dataProvider provideTestGetWithDefaultConfiguration
      *
@@ -80,7 +80,28 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      * @param  array|string $expectedResult
      * @return void
      **/
-    public function testGetWithDefaultConfiguration($xpathExpression, $alwaysReturnArray, $expectedResult) {
+    public function testGetWithDefaultConfigurationWithoutCache($xpathExpression, $alwaysReturnArray, $expectedResult) {
+        $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd", false);
+        $configuration->loadConfiguration(null);
+
+        $this->assertEquals($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray) );
+        $this->assertSame($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray) );
+    }
+
+    /**
+     * testGetWithDefaultConfigurationWithCache
+     *
+     * Tests if Configuration::get returns the expected result from the default configuration (with caching)
+     *
+     * @dataProvider provideTestGetWithDefaultConfiguration
+     *
+     * @access public
+     * @param  string       $xpathExpression
+     * @param  boolean      $alwaysReturnArray
+     * @param  array|string $expectedResult
+     * @return void
+     **/
+    public function testGetWithDefaultConfigurationWithCache($xpathExpression, $alwaysReturnArray, $expectedResult) {
         $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
         $configuration->loadConfiguration(null);
 
@@ -89,12 +110,39 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     * testWithCacheIsFasterThanWithoutCache
+     *
+     * Confirms that caching speeds up Configuration if you ask te same information multiple times
+     *
+     * @access public
+     * @return void
+     **/
+    public function testWithCacheIsFasterThanWithoutCache() {
+        $cached =  new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
+        $cached->loadConfiguration(null);
+        $notCached =  new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd", false);
+        $notCached->loadConfiguration(null);
+
+        $cachedStart = microtime(true);
+        $cached->get('/test/foo');
+        $cached->get('/test/foo');
+        $cachedTime = microtime(true) - $cachedStart;
+
+        $notCachedStart = microtime(true);
+        $notCached->get('/test/foo');
+        $notCached->get('/test/foo');
+        $notCachedTime = microtime(true) - $notCachedStart;
+
+        $this->assertLessThan($notCachedTime, $cachedTime);
+    }
+
+    /**
      * testLoadInvalidConfigurationLoadsDefaultConfigurationAfterTriggeringErrors
      *
      * Tests if loading an invalid configuration loads the default configuration after triggering errors (warnings)
      *
      * @depends testLoadInvalidConfigurationTriggersErrors
-     * @depends testGetWithDefaultConfiguration
+     * @depends testGetWithDefaultConfigurationWithCache
      *
      * @access public
      * @return void
@@ -111,7 +159,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase {
      *
      * Tests if Configuration::getDOMDocument returns the loaded DOMDocument instance
      *
-     * @depends testGetWithDefaultConfiguration
+     * @depends testGetWithDefaultConfigurationWithCache
      *
      * @access public
      * @return void
