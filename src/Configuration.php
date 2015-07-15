@@ -202,7 +202,7 @@ class Configuration
                 $this->cleanupDOMDocument();
             } else {
                 $this->triggerHumanReadableErrors();
-                if ($dom->documentURI !== $this->defaultConfigurationFile) {
+                if (realpath(parse_url($dom->documentURI, PHP_URL_PATH)) !== realpath($this->defaultConfigurationFile)) {
                     $this->loadConfiguration($this->defaultConfigurationFile);
                 }
             }
