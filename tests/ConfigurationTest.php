@@ -112,6 +112,39 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testLoadWithoutSchemaTriggersWarning
+     *
+     * Tests if Configation::loadConfiguration triggers a E_USER_WARNING when a XML schema is not supplied
+     *
+     * @expectedException        PHPUnit_Framework_Error_Warning
+     * @expectedExceptionMessage A valid schema file must be supplied.
+     *
+     * @access public
+     * @return null
+     **/
+    public function testLoadWithoutSchemaTriggersWarning()
+    {
+        $configuration = new Configuration();
+        $configuration->loadConfiguration(__DIR__ . '/Resources/configuration/default.xml');
+    }
+
+    /**
+     * testGetWithoutSchemaDoesNotTriggerAFatalError
+     *
+     * Tests if Configuration::get does not trigger a fatal error when a XML schema is not supplied
+     *
+     * @access public
+     * @return null
+     **/
+    public function testGetWithoutSchemaDoesNotTriggerAFatalError()
+    {
+        $configuration = new Configuration();
+        @$configuration->loadConfiguration(__DIR__ . '/Resources/configuration/default.xml');
+
+        $this->assertNull($configuration->get('/test/fuzzy'));
+    }
+
+    /**
      * testGetDOMDocumentReturnsLoadedDOMDocument
      *
      * Tests if Configuration::getDOMDocument returns the loaded DOMDocument instance
