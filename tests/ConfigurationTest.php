@@ -117,7 +117,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
      * Tests if Configation::loadConfiguration triggers a E_USER_WARNING when a XML schema is not supplied
      *
      * @expectedException        PHPUnit_Framework_Error_Warning
-     * @expectedExceptionMessage A valid schema file must be supplied.
+     * @expectedExceptionMessage A valid schema file must be provided.
      *
      * @access public
      * @return null

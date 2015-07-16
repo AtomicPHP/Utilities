@@ -10,6 +10,8 @@ use DOMXPath;
 /**
  * Configuration
  *
+ * Class to validate and read XML configuration files. Intended to work only with a XML schema file.
+ *
  * @author  Niels Nijens <niels@connectholland.nl>
  * @package Nijens\Utilities
  **/
@@ -50,11 +52,11 @@ class Configuration
     /**
      * __construct
      *
-     * Constructs a new Configuration
+     * Constructs a new Configuration instance
      *
      * @access public
      * @param  string|null $defaultConfigurationFile Location of the default XML configuration file
-     * @param  string|null $xsdSchemaFile            Location of the XSD file for configuration validation
+     * @param  string|null $xsdSchemaFile            Location of the XSD file for configuration validation. Optional so that a default schema can also be provided by a subclass.
      * @return void
      **/
     public function __construct($defaultConfigurationFile = null, $xsdSchemaFile = null)
@@ -135,6 +137,10 @@ class Configuration
      **/
     public function get($xpathExpression, $alwaysReturnArray = false)
     {
+        if (($this->xpath instanceof DOMXPath) === false) {
+            return;
+        }
+
         $nodeList = @$this->xpath->query($xpathExpression);
         if ($nodeList instanceof DOMNodeList) {
             if ($nodeList->length === 1) {
@@ -208,6 +214,8 @@ class Configuration
             }
 
             libxml_use_internal_errors(false);
+        } else {
+            trigger_error('A valid schema file must be provided.', E_USER_WARNING);
         }
     }
 
