@@ -93,6 +93,46 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testGetWithDefaultConfigurationWithoutCache
+     *
+     * Tests if Configuration::get returns the expected result from the default configuration (without caching)
+     *
+     * @dataProvider provideTestGetWithDefaultConfiguration
+     *
+     * @access public
+     * @param  string       $xpathExpression
+     * @param  boolean      $alwaysReturnArray
+     * @param  array|string $expectedResult
+     * @return void
+     **/
+    public function testGetWithDefaultConfigurationWithoutCache($xpathExpression, $alwaysReturnArray, $expectedResult)
+    {
+        $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd', false);
+        $configuration->loadConfiguration(null);
+
+        $this->assertEquals($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray));
+        $this->assertSame($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray));
+    }
+
+    /**
+     * testGetDoesNotReturnCacheWhenOtherConfigurationIsLoaded
+     *
+     * Tests if Configuration::get does not return a cached XPath result from the previously loaded configuration
+     *
+     * @access public
+     * @return void
+     **/
+    public function testGetDoesNotReturnCacheWhenOtherConfigurationIsLoaded()
+    {
+        $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd');
+        $configuration->loadConfiguration(null);
+        $this->assertEquals('Text content', $configuration->get('/test/fuzzy'));
+
+        $configuration->loadConfiguration(__DIR__ . '/Resources/configuration/optional.xml');
+        $this->assertEquals('Fuzzy text content', $configuration->get('/test/fuzzy'));
+    }
+
+    /**
      * testLoadInvalidConfigurationLoadsDefaultConfigurationAfterTriggeringErrors
      *
      * Tests if loading an invalid configuration loads the default configuration after triggering errors (warnings)
