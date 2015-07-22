@@ -165,7 +165,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
         $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd');
         @$configuration->loadConfiguration(__DIR__ . '/Resources/configuration/invalid.xml');
         $this->assertEquals('Text content', $configuration->get('/test/fuzzy') );
-        
+
         $configuration->loadConfiguration(__DIR__ . '/Resources/configuration/optional.xml');
         $this->assertEquals('Fuzzy text content', $configuration->get('/test/fuzzy') );
     }
@@ -175,6 +175,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
      *
      * Tests if loading an invalid configuration loads the default configuration after triggering errors (warnings)
      *
+     * @depends testLoadInvalidConfigurationTriggersErrors
      * @depends testGetWithDefaultConfigurationWithCache
      *
      * @access public

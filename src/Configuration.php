@@ -54,7 +54,7 @@ class Configuration
      *
      * @access private
      * @var    boolean
-     * */
+     **/
     private $useCaching;
 
     /**
@@ -62,7 +62,7 @@ class Configuration
      *
      * @access private
      * @var    array
-     * */
+     **/
     private $cache = ["alwaysArray" => [], "optionalArray" => [] ];
 
     /**
@@ -171,7 +171,7 @@ class Configuration
     }
 
     /**
-     * getFromConfiguration
+     * getFromDOMDocument
      *
      * Returns an array representation of the XML nodes from the requested $xpathExpression in the loaded dom
      *
