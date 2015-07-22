@@ -71,9 +71,9 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * testGetWithDefaultConfiguration
+     * testGetWithDefaultConfigurationWithoutCache
      *
-     * Tests if Configuration::get returns the expected result from the default configuration
+     * Tests if Configuration::get returns the expected result from the default configuration (without caching)
      *
      * @dataProvider provideTestGetWithDefaultConfiguration
      *
@@ -83,13 +83,91 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
      * @param  array|string $expectedResult
      * @return void
      **/
-    public function testGetWithDefaultConfiguration($xpathExpression, $alwaysReturnArray, $expectedResult)
+    public function testGetWithDefaultConfigurationWithoutCache($xpathExpression, $alwaysReturnArray, $expectedResult)
     {
-        $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd');
+        $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd", false);
         $configuration->loadConfiguration(null);
 
-        $this->assertEquals($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray));
-        $this->assertSame($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray));
+        $this->assertEquals($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray) );
+        $this->assertSame($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray) );
+    }
+
+    /**
+     * testGetWithDefaultConfigurationWithCache
+     *
+     * Tests if Configuration::get returns the expected result from the default configuration (with caching)
+     *
+     * @dataProvider provideTestGetWithDefaultConfiguration
+     *
+     * @access public
+     * @param  string       $xpathExpression
+     * @param  boolean      $alwaysReturnArray
+     * @param  array|string $expectedResult
+     * @return void
+     **/
+    public function testGetWithDefaultConfigurationWithCache($xpathExpression, $alwaysReturnArray, $expectedResult)
+    {
+        $configuration = new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
+        $configuration->loadConfiguration(null);
+
+        $this->assertEquals($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray) );
+        $this->assertSame($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray) );
+    }
+
+    /**
+     * testWithCacheIsFasterThanWithoutCache
+     *
+     * Confirms that caching speeds up Configuration if you ask te same information multiple times
+     *
+     * @access public
+     * @return void
+     **/
+    public function testWithCacheIsFasterThanWithoutCache()
+    {
+        // The actual speed depends on disk I/O a lot. So if you got super fast disks, this test is not reliable.
+        // These tests are done using a macbook on a local disk, check if for 2 get's at least 75% of the cached calls is faster and at least 95% when doing 3 calls
+        foreach ([2 => 75, 3 => 95] as $count => $limit) {
+            $success = 0;
+            for ($i = 0; $i < 100; $i++) {
+                $cached =  new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
+                $cached->loadConfiguration(null);
+                $notCached =  new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd", false);
+                $notCached->loadConfiguration(null);
+                $cachedStart = microtime(true);
+                for ($j = 0; $j < $count; $j++) {
+                    $cached->get('/test/foo');
+                }
+                $cachedTime = microtime(true) - $cachedStart;
+
+                $notCachedStart = microtime(true);
+                for ($j = 0; $j < $count; $j++) {
+                    $notCached->get('/test/foo');
+                }
+                $notCachedTime = microtime(true) - $notCachedStart;
+
+                if ($notCachedTime > $cachedTime) {
+                    $success++;
+                }
+            }
+            $this->assertGreaterThan($limit, $success);
+        }
+    }
+
+     /**
+     * testCachedResultsAreValidWhenLoadingNewFileInRuntime
+     *
+     * Confirms that the cache reads from the currenlty loaded configuration
+     *
+     * @access public
+     * @return void
+     **/
+    public function testCachedResultsAreValidWhenLoadingNewFileInRuntime() {
+        $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd');
+        @$configuration->loadConfiguration(__DIR__ . '/Resources/configuration/invalid.xml');
+        $this->assertEquals('Text content', $configuration->get('/test/fuzzy') );
+        
+        $configuration->loadConfiguration(__DIR__ . '/Resources/configuration/optional.xml');
+        $this->assertEquals('Fuzzy text content', $configuration->get('/test/fuzzy') );
     }
 
     /**
@@ -97,8 +175,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
      *
      * Tests if loading an invalid configuration loads the default configuration after triggering errors (warnings)
      *
-     * @depends testLoadInvalidConfigurationTriggersErrors
-     * @depends testGetWithDefaultConfiguration
+     * @depends testGetWithDefaultConfigurationWithCache
      *
      * @access public
      * @return void
@@ -149,7 +226,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
      *
      * Tests if Configuration::getDOMDocument returns the loaded DOMDocument instance
      *
-     * @depends testGetWithDefaultConfiguration
+     * @depends testGetWithDefaultConfigurationWithCache
      *
      * @access public
      * @return void
