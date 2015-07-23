@@ -114,45 +114,6 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expectedResult, $configuration->get($xpathExpression, $alwaysReturnArray) );
     }
 
-    /**
-     * testWithCacheIsFasterThanWithoutCache
-     *
-     * Confirms that caching speeds up Configuration if you ask te same information multiple times
-     *
-     * @access public
-     * @return void
-     **/
-    public function testWithCacheIsFasterThanWithoutCache()
-    {
-        // The actual speed depends on disk I/O a lot. So if you got super fast disks, this test is not reliable.
-        // These tests are done using a macbook on a local disk, check if for 2 get's at least 75% of the cached calls is faster and at least 95% when doing 3 calls
-        foreach ([2 => 75, 3 => 95] as $count => $limit) {
-            $success = 0;
-            for ($i = 0; $i < 100; $i++) {
-                $cached =  new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd");
-                $cached->loadConfiguration(null);
-                $notCached =  new Configuration(__DIR__ . "/Resources/configuration/default.xml", __DIR__ . "/Resources/xsd/default.xsd", false);
-                $notCached->loadConfiguration(null);
-                $cachedStart = microtime(true);
-                for ($j = 0; $j < $count; $j++) {
-                    $cached->get('/test/foo');
-                }
-                $cachedTime = microtime(true) - $cachedStart;
-
-                $notCachedStart = microtime(true);
-                for ($j = 0; $j < $count; $j++) {
-                    $notCached->get('/test/foo');
-                }
-                $notCachedTime = microtime(true) - $notCachedStart;
-
-                if ($notCachedTime > $cachedTime) {
-                    $success++;
-                }
-            }
-            $this->assertGreaterThan($limit, $success);
-        }
-    }
-
      /**
      * testCachedResultsAreValidWhenLoadingNewFileInRuntime
      *
