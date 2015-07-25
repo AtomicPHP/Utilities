@@ -73,7 +73,7 @@ class Configuration
      * @access public
      * @param  string|null $defaultConfigurationFile Location of the default XML configuration file
      * @param  string|null $xsdSchemaFile            Location of the XSD file for configuration validation. Optional so that a default schema can also be provided by a subclass.
-     * @param  boolean|null $useCaching               Boolean indicating if caching should be used
+     * @param  boolean     $useCaching               Boolean indicating if caching should be used
      * @return void
      **/
     public function __construct($defaultConfigurationFile = null, $xsdSchemaFile = null, $useCaching = true)
@@ -153,9 +153,9 @@ class Configuration
      * @param  string     $xpathExpression
      * @param  boolean    $alwaysReturnArray
      * @return array|null
-     * */
+     **/
     public function get($xpathExpression, $alwaysReturnArray = false) {
-        if ($this->useCaching && ($alwaysReturnArray === true) ) {
+        if ($this->useCaching === true && $alwaysReturnArray === true) {
             if (!array_key_exists($xpathExpression, $this->cache["alwaysArray"])) {
                 $this->cache["alwaysArray"][$xpathExpression] = $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
             }
@@ -174,8 +174,6 @@ class Configuration
      * getFromDOMDocument
      *
      * Returns an array representation of the XML nodes from the requested $xpathExpression in the loaded dom
-     *
-     * @api
      *
      * @access private
      * @param  string     $xpathExpression

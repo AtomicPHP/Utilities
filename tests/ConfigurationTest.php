@@ -124,7 +124,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
      **/
     public function testCachedResultsAreValidWhenLoadingNewFileInRuntime() {
         $configuration = new Configuration(__DIR__ . '/Resources/configuration/default.xml', __DIR__ . '/Resources/xsd/default.xsd');
-        @$configuration->loadConfiguration(__DIR__ . '/Resources/configuration/invalid.xml');
+        @$configuration->loadConfiguration(null);
         $this->assertEquals('Text content', $configuration->get('/test/fuzzy') );
 
         $configuration->loadConfiguration(__DIR__ . '/Resources/configuration/optional.xml');
