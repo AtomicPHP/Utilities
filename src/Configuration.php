@@ -49,11 +49,11 @@ class Configuration
      **/
     private $xpath;
 
-     /**
+    /**
      * Boolean indicating if configuration results should be cached
      *
      * @access private
-     * @var    boolean
+     * @var boolean
      **/
     private $useCaching;
 
@@ -61,9 +61,9 @@ class Configuration
      * The cache (used only when caching is enabled)
      *
      * @access private
-     * @var    array
+     * @var array
      **/
-    private $cache = ["alwaysArray" => [], "optionalArray" => [] ];
+    private $cache = ['alwaysArray' => [], 'optionalArray' => []];
 
     /**
      * __construct
@@ -154,17 +154,20 @@ class Configuration
      * @param  boolean    $alwaysReturnArray
      * @return array|null
      **/
-    public function get($xpathExpression, $alwaysReturnArray = false) {
+    public function get($xpathExpression, $alwaysReturnArray = false)
+    {
         if ($this->useCaching === true && $alwaysReturnArray === true) {
-            if (!array_key_exists($xpathExpression, $this->cache["alwaysArray"])) {
-                $this->cache["alwaysArray"][$xpathExpression] = $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
+            if (!array_key_exists($xpathExpression, $this->cache['alwaysArray'])) {
+                $this->cache['alwaysArray'][$xpathExpression] = $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
             }
-            return $this->cache["alwaysArray"][$xpathExpression];
+
+            return $this->cache['alwaysArray'][$xpathExpression];
         } elseif ($this->useCaching === true) {
-            if (!array_key_exists($xpathExpression, $this->cache["optionalArray"])) {
-                $this->cache["optionalArray"][$xpathExpression] = $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
+            if (!array_key_exists($xpathExpression, $this->cache['optionalArray'])) {
+                $this->cache['optionalArray'][$xpathExpression] = $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
             }
-            return $this->cache["optionalArray"][$xpathExpression];
+
+            return $this->cache['optionalArray'][$xpathExpression];
         } else {
             return $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
         }
@@ -251,7 +254,7 @@ class Configuration
                 $this->xpath = new DOMXPath($dom);
 
                 $this->cleanupDOMDocument();
-                $this->cache = ["alwaysArray" => [], "optionalArray" => [] ]; // reset cache for the new dom
+                $this->cache = ['alwaysArray' => [], 'optionalArray' => []]; // reset cache for the new dom
             } else {
                 $this->triggerHumanReadableErrors();
                 if (realpath(parse_url($dom->documentURI, PHP_URL_PATH)) !== realpath($this->defaultConfigurationFile)) {
