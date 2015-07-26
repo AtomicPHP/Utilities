@@ -160,7 +160,7 @@ class Configuration
                 $this->cache["alwaysArray"][$xpathExpression] = $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
             }
             return $this->cache["alwaysArray"][$xpathExpression];
-        } elseif ($this->useCaching) {
+        } elseif ($this->useCaching === true) {
             if (!array_key_exists($xpathExpression, $this->cache["optionalArray"])) {
                 $this->cache["optionalArray"][$xpathExpression] = $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
             }
