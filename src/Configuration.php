@@ -50,6 +50,22 @@ class Configuration
     private $xpath;
 
     /**
+     * Boolean indicating if configuration results should be cached
+     *
+     * @access private
+     * @var boolean
+     **/
+    private $useCaching;
+
+    /**
+     * The cache (used only when caching is enabled)
+     *
+     * @access private
+     * @var array
+     **/
+    private $cache = ['alwaysArray' => [], 'optionalArray' => []];
+
+    /**
      * __construct
      *
      * Constructs a new Configuration instance
@@ -57,9 +73,10 @@ class Configuration
      * @access public
      * @param  string|null $defaultConfigurationFile Location of the default XML configuration file
      * @param  string|null $xsdSchemaFile            Location of the XSD file for configuration validation. Optional so that a default schema can also be provided by a subclass.
+     * @param  boolean     $useCaching               Boolean indicating if caching should be used
      * @return void
      **/
-    public function __construct($defaultConfigurationFile = null, $xsdSchemaFile = null)
+    public function __construct($defaultConfigurationFile = null, $xsdSchemaFile = null, $useCaching = true)
     {
         if (is_file($defaultConfigurationFile)) {
             $this->defaultConfigurationFile = $defaultConfigurationFile;
@@ -67,6 +84,8 @@ class Configuration
         if (is_file($xsdSchemaFile)) {
             $this->xsdSchemaFile = $xsdSchemaFile;
         }
+
+        $this->useCaching = $useCaching;
     }
 
     /**
@@ -137,6 +156,35 @@ class Configuration
      **/
     public function get($xpathExpression, $alwaysReturnArray = false)
     {
+        if ($this->useCaching === true && $alwaysReturnArray === true) {
+            if (!array_key_exists($xpathExpression, $this->cache['alwaysArray'])) {
+                $this->cache['alwaysArray'][$xpathExpression] = $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
+            }
+
+            return $this->cache['alwaysArray'][$xpathExpression];
+        } elseif ($this->useCaching === true) {
+            if (!array_key_exists($xpathExpression, $this->cache['optionalArray'])) {
+                $this->cache['optionalArray'][$xpathExpression] = $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
+            }
+
+            return $this->cache['optionalArray'][$xpathExpression];
+        } else {
+            return $this->getFromDOMDocument($xpathExpression, $alwaysReturnArray);
+        }
+    }
+
+    /**
+     * getFromDOMDocument
+     *
+     * Returns an array representation of the XML nodes from the requested $xpathExpression in the loaded dom
+     *
+     * @access private
+     * @param  string     $xpathExpression
+     * @param  boolean    $alwaysReturnArray
+     * @return array|null
+     **/
+    private function getFromDOMDocument($xpathExpression, $alwaysReturnArray = false)
+    {
         if (($this->xpath instanceof DOMXPath) === false) {
             return;
         }
@@ -206,6 +254,7 @@ class Configuration
                 $this->xpath = new DOMXPath($dom);
 
                 $this->cleanupDOMDocument();
+                $this->cache = ['alwaysArray' => [], 'optionalArray' => []]; // reset cache for the new dom
             } else {
                 $this->triggerHumanReadableErrors();
                 if (realpath(parse_url($dom->documentURI, PHP_URL_PATH)) !== realpath($this->defaultConfigurationFile)) {
