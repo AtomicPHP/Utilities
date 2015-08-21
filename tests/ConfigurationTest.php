@@ -128,7 +128,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
         $configuration->loadConfiguration(null);
         $this->assertEquals('Text content', $configuration->get('/test/fuzzy'));
 
-        $configuration->loadConfiguration(__DIR__ . '/Resources/configuration/optional.xml');
+        $configuration->loadConfiguration(__DIR__ . '/Resources/configuration/valid.xml');
         $this->assertEquals('Fuzzy text content', $configuration->get('/test/fuzzy'));
     }
 
