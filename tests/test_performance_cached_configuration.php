@@ -5,7 +5,7 @@
 
 use Nijens\Utilities\Configuration;
 
-require '../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 foreach (array(2, 3) as $count) {
     $success = 0;
