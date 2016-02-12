@@ -45,6 +45,7 @@ class JSONSerializableXMLElementTest extends PHPUnit_Framework_TestCase
         return array(
             array('<node></node>', null),
             array('<node>Text</node>', 'Text'),
+            array('<node>0</node>', '0'),
             array("<node attribute='attributeValue'>Text</node>", array('attribute' => 'attributeValue', '#value' => 'Text')),
             array("<node attribute='attributeValue'><childnode/>Text</node>", array('attribute' => 'attributeValue', 'childnode' => null, '#value' => 'Text')),
             array("<node attribute='attributeValue'><childnode attribute='attributeValue'/>Text</node>", array('attribute' => 'attributeValue', 'childnode' => array('attribute' => 'attributeValue'), '#value' => 'Text')),

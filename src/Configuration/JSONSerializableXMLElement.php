@@ -45,7 +45,7 @@ class JSONSerializableXMLElement extends SimpleXMLElement implements JsonSeriali
             }
         }
 
-        if (empty($data)) {
+        if ((is_array($data) && count($data) === 0) || (is_scalar($data) && strlen($data) === 0)) {
             $data = null;
         }
 
